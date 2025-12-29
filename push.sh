@@ -1,15 +1,22 @@
 #!/bin/bash
 
-# Stop script if any command fails
 set -e
 
 BRANCH="main"
 REMOTE="origin"
-MESSAGE="auto commit $(date '+%Y-%m-%d %H:%M:%S')"
 
-echo "🔄 Checking git status..."
+# Ask for commit message
+read -p "📝 Enter commit message: " MESSAGE
 
-# Check if this is a git repo
+# Check empty message
+if [ -z "$MESSAGE" ]; then
+  echo "❌ Commit message cannot be empty"
+  exit 1
+fi
+
+echo "🔄 Checking git repository..."
+
+# Ensure git repo
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "❌ Not a git repository"
   exit 1
@@ -30,4 +37,4 @@ git commit -m "$MESSAGE"
 echo "🚀 Pushing to $REMOTE $BRANCH..."
 git push $REMOTE $BRANCH
 
-echo "🎉 Auto push completed successfully!"
+echo "🎉 Auto push completed!"
