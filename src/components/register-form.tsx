@@ -3,7 +3,7 @@ import { Inputs } from "@/lib/types/input";
 import { Button } from "./ui/button";
 import {
   Card,
-  CardAction,
+  CardToolbar,
   CardContent,
   CardDescription,
   CardFooter,
@@ -62,9 +62,9 @@ export default function RegisterForm() {
         <CardDescription>
           Enter your email below to register to your account
         </CardDescription>
-        <CardAction>
+        <CardToolbar>
           <Button variant="link">Sign Up</Button>
-        </CardAction>
+        </CardToolbar>
       </CardHeader>
       <CardContent>
         <Form {...form}>

@@ -38,6 +38,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import ProgressUpload from "../file-upload/progress-upload";
+import SortableImageUpload from "../file-upload/sortable";
 
 const formSchema = z.object({
   title: z
@@ -240,11 +242,13 @@ export function ProductForm() {
               )}
             />
             {/* File upload */}
-            <Field>
+            {/* <Field>
               <FieldLabel htmlFor="picture">Picture</FieldLabel>
               <Input id="picture" type="file" />
               <FieldDescription>Select a picture to upload.</FieldDescription>
-            </Field>
+            </Field> */}
+            {/* <ProgressUpload /> */}
+            <SortableImageUpload />
           </FieldGroup>
         </form>
       </CardContent>

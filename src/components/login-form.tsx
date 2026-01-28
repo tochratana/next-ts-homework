@@ -3,7 +3,7 @@ import { Inputs } from "@/lib/types/input";
 import { Button } from "./ui/button";
 import {
   Card,
-  CardAction,
+  CardToolbar,
   CardContent,
   CardDescription,
   CardFooter,
@@ -48,9 +48,9 @@ export default function LoginForm() {
         <CardDescription>
           Enter your email below to login to your account
         </CardDescription>
-        <CardAction>
+        <CardToolbar>
           <Link href={"/register"}>Sign Up</Link>
-        </CardAction>
+        </CardToolbar>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(loginSubmit)}>
