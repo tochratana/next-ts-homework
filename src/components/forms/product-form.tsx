@@ -40,6 +40,7 @@ import {
 } from "../ui/select";
 import ProgressUpload from "../file-upload/progress-upload";
 import SortableImageUpload from "../file-upload/sortable";
+import ImageUpload, { ImageFile } from "../file-upload/image-upload";
 
 const formSchema = z.object({
   title: z
@@ -96,6 +97,11 @@ export function ProductForm() {
         "--border-radius": "calc(var(--radius)  + 4px)",
       } as React.CSSProperties,
     });
+  }
+
+
+  function handleImageUpload(images: ImageFile){
+    
   }
 
   return (
@@ -248,7 +254,10 @@ export function ProductForm() {
               <FieldDescription>Select a picture to upload.</FieldDescription>
             </Field> */}
             {/* <ProgressUpload /> */}
-            <SortableImageUpload />
+            {/* <SortableImageUpload /> */}
+            <ImageUpload 
+            {...field}
+            />
           </FieldGroup>
         </form>
       </CardContent>
