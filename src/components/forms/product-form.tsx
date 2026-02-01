@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 import {
   Card,
   CardContent,
@@ -90,27 +91,65 @@ export function ProductForm() {
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    // toast("You submitted the following values:", {
-    //   description: (
-    //     <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-    //       <code>{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    //   position: "bottom-right",
-    //   classNames: {
-    //     content: "flex flex-col gap-2",
-    //   },
-    //   style: {
-    //     "--border-radius": "calc(var(--radius)  + 4px)",
-    //   } as React.CSSProperties,
-    // });
+    toast("You submitted the following values:", {
+      description: (
+        <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
+          <code>{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+      position: "bottom-right",
+      classNames: {
+        content: "flex flex-col gap-2",
+      },
+      style: {
+        "--border-radius": "calc(var(--radius)  + 4px)",
+      } as React.CSSProperties,
+    });
 
-    for(const image of images){
-      formData.append("file",image.file)
+    for (const image of images) {
+      formData.append("file", image.file);
     }
-    const imageFromUpload = await uploadImageToServer(formData)
-    console.log("Upload to server : ", imageFromUpload)
-    console.log("Click submit : ", data)
+
+    let resp: any;
+    try {
+      resp = await uploadImageToServer(formData);
+      console.log("Upload to server:", resp);
+    } catch (err: any) {
+      console.error("Image upload failed:", err?.message ?? err);
+      toast("Image upload failed. See console for details.");
+      return; // abort submit when upload fails
+    }
+
+    // Resolve possible response shapes into an array of image URLs
+    let urls: string[] = [];
+    if (Array.isArray(resp)) {
+      urls = resp.map((u: any) => u.location ?? u.url ?? u.path ?? u.fileUrl ?? u.src ?? u.filename).filter(Boolean);
+    } else if (Array.isArray(resp?.files)) {
+      urls = resp.files.map((f: any) => f.location ?? f.url ?? f.path ?? f.fileUrl ?? f.src).filter(Boolean);
+    } else if (resp?.location || resp?.url) {
+      urls = [resp.location ?? resp.url];
+    }
+
+    const productPayload = {
+      title: data.title,
+      price: data.price,
+      description: data.description,
+      categoryId: Number(data.catagory) || 1,
+      images: urls,
+    };
+
+    // Post product to API (uses same base env var pattern as upload)
+    const base = process.env.NEXT_PUBLIC_API_BASE_API ?? "";
+    const productUrl = `${base}/api/v1/products`;
+    try {
+      const createRes = await axios.post(productUrl, productPayload);
+      console.log("Product created:", createRes.data);
+      toast("Product created");
+      form.reset();
+    } catch (err) {
+      console.error("Error creating product:", err);
+      toast("Failed to create product");
+    }
   }
 
   // create for handle upload image and this fun use in OnImageChange(Interface)
