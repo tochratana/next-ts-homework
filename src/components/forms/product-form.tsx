@@ -41,6 +41,7 @@ import {
 import ProgressUpload from "../file-upload/progress-upload";
 import SortableImageUpload from "../file-upload/sortable";
 import ImageUpload, { ImageFile } from "../file-upload/image-upload";
+import { uploadImageToServer } from "@/lib/data/uploadImage";
 
 const formSchema = z.object({
   title: z
@@ -52,13 +53,14 @@ const formSchema = z.object({
     .min(20, "Product must be at least 20 characters.")
     .max(100, "Product must be at most 100 characters."),
   price: z.coerce.number().positive("Price must be greater than 0"),
-  language: z
+  catagory: z
     .string()
     .min(1, "Please select your spoken language.")
     .refine((val) => val !== "auto", {
       message:
         "Auto-detection is not allowed. Please select a specific language.",
     }),
+  image: z.any()
 });
 
 const spokenLanguages = [
@@ -72,36 +74,48 @@ const spokenLanguages = [
 ] as const;
 
 export function ProductForm() {
+
+  const formData = new FormData();
+  const [images, setImages] = React.useState<ImageFile[]>([]);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       description: "",
       price: 0,
-      language: "",
+      catagory: "",
+      image:""
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    });
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    // toast("You submitted the following values:", {
+    //   description: (
+    //     <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
+    //       <code>{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    //   position: "bottom-right",
+    //   classNames: {
+    //     content: "flex flex-col gap-2",
+    //   },
+    //   style: {
+    //     "--border-radius": "calc(var(--radius)  + 4px)",
+    //   } as React.CSSProperties,
+    // });
+
+    for(const image of images){
+      formData.append("file",image.file)
+    }
+    const imageFromUpload = await uploadImageToServer(formData)
+    console.log("Upload to server : ", imageFromUpload)
+    console.log("Click submit : ", data)
   }
 
-
-  function handleImageUpload(images: ImageFile){
-    
+  // create for handle upload image and this fun use in OnImageChange(Interface)
+  function handleImageUpload(images: ImageFile[]){
+    setImages(images)
   }
 
   return (
@@ -204,7 +218,7 @@ export function ProductForm() {
 
             {/* TODO controller language */}
             <Controller
-              name="language"
+              name="catagory"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field
@@ -256,7 +270,8 @@ export function ProductForm() {
             {/* <ProgressUpload /> */}
             {/* <SortableImageUpload /> */}
             <ImageUpload 
-            {...field}
+            {...Field}
+            onImagesChange={handleImageUpload}
             />
           </FieldGroup>
         </form>
