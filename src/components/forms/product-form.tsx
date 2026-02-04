@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import {
   Card,
   CardContent,
@@ -42,7 +41,7 @@ import {
 import ProgressUpload from "../file-upload/progress-upload";
 import SortableImageUpload from "../file-upload/sortable";
 import ImageUpload, { ImageFile } from "../file-upload/image-upload";
-import { uploadImageToServer } from "@/lib/data/uploadImage";
+import { uploadImageToServer, createProduct } from "@/lib/data/uploadImage";
 
 const formSchema = z.object({
   title: z
@@ -61,7 +60,7 @@ const formSchema = z.object({
       message:
         "Auto-detection is not allowed. Please select a specific language.",
     }),
-  image: z.any()
+  image: z.any(),
 });
 
 const spokenLanguages = [
@@ -75,7 +74,6 @@ const spokenLanguages = [
 ] as const;
 
 export function ProductForm() {
-
   const formData = new FormData();
   const [images, setImages] = React.useState<ImageFile[]>([]);
 
@@ -86,7 +84,7 @@ export function ProductForm() {
       description: "",
       price: 0,
       catagory: "",
-      image:""
+      image: "",
     },
   });
 
@@ -123,9 +121,16 @@ export function ProductForm() {
     // Resolve possible response shapes into an array of image URLs
     let urls: string[] = [];
     if (Array.isArray(resp)) {
-      urls = resp.map((u: any) => u.location ?? u.url ?? u.path ?? u.fileUrl ?? u.src ?? u.filename).filter(Boolean);
+      urls = resp
+        .map(
+          (u: any) =>
+            u.location ?? u.url ?? u.path ?? u.fileUrl ?? u.src ?? u.filename,
+        )
+        .filter(Boolean);
     } else if (Array.isArray(resp?.files)) {
-      urls = resp.files.map((f: any) => f.location ?? f.url ?? f.path ?? f.fileUrl ?? f.src).filter(Boolean);
+      urls = resp.files
+        .map((f: any) => f.location ?? f.url ?? f.path ?? f.fileUrl ?? f.src)
+        .filter(Boolean);
     } else if (resp?.location || resp?.url) {
       urls = [resp.location ?? resp.url];
     }
@@ -139,13 +144,11 @@ export function ProductForm() {
       images: urls,
     };
 
-    const base = process.env.NEXT_PUBLIC_API_BASE_API ?? "";
-    const productUrl = `${base}/api/v1/products`;
     try {
-      const createRes = await axios.post(productUrl, productPayload);
-      console.log("Product created:", createRes.data);
+      await createProduct(productPayload);
       toast("Product created");
       form.reset();
+      setImages([]);
     } catch (err) {
       console.error("Error creating product:", err);
       toast("Failed to create product");
@@ -153,8 +156,8 @@ export function ProductForm() {
   }
 
   // create for handle upload image and this fun use in OnImageChange(Interface)
-  function handleImageUpload(images: ImageFile[]){
-    setImages(images)
+  function handleImageUpload(images: ImageFile[]) {
+    setImages(images);
   }
 
   return (
@@ -308,10 +311,7 @@ export function ProductForm() {
             </Field> */}
             {/* <ProgressUpload /> */}
             {/* <SortableImageUpload /> */}
-            <ImageUpload 
-            {...Field}
-            onImagesChange={handleImageUpload}
-            />
+            <ImageUpload {...Field} onImagesChange={handleImageUpload} />
           </FieldGroup>
         </form>
       </CardContent>
