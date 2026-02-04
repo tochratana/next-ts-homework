@@ -41,7 +41,11 @@ import {
 import ProgressUpload from "../file-upload/progress-upload";
 import SortableImageUpload from "../file-upload/sortable";
 import ImageUpload, { ImageFile } from "../file-upload/image-upload";
-import { uploadImageToServer, createProduct } from "@/lib/data/uploadImage";
+import {
+  uploadImageToServer,
+  createProduct,
+  getCategory,
+} from "@/lib/data/uploadImage";
 
 const formSchema = z.object({
   title: z
@@ -72,6 +76,8 @@ const spokenLanguages = [
   { label: "Chinese", value: "zh" },
   { label: "Japanese", value: "ja" },
 ] as const;
+
+await getCategory();
 
 export function ProductForm() {
   const formData = new FormData();

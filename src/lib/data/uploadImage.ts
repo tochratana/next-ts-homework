@@ -17,10 +17,19 @@ export async function uploadImageToServer(image: FormData) {
 }
 
 export async function createProduct(productPayload: PorductRequet) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_API ?? "";
+  const base = process.env.NEXT_PUBLIC_API_BASE_API;
   const url = `${base}/api/v1/products`;
 
   const response = await axios.post(url, productPayload);
   console.log("Product created:", response.data);
   return response.data;
+}
+
+export async function getCategory() {
+  const base = process.env.NEXT_PUBLIC_API_BASE_API;
+  const url = `${base}/api/v1/categories`;
+
+  const response = await axios.get(url);
+  console.log("All Category : ", response);
+  return response;
 }
