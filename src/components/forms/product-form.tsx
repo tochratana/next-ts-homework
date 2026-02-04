@@ -91,20 +91,20 @@ export function ProductForm() {
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    });
+    // toast("You submitted the following values:", {
+    //   description: (
+    //     <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
+    //       <code>{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    //   position: "bottom-right",
+    //   classNames: {
+    //     content: "flex flex-col gap-2",
+    //   },
+    //   style: {
+    //     "--border-radius": "calc(var(--radius)  + 4px)",
+    //   } as React.CSSProperties,
+    // });
 
     for (const image of images) {
       formData.append("file", image.file);
@@ -134,11 +134,11 @@ export function ProductForm() {
       title: data.title,
       price: data.price,
       description: data.description,
-      categoryId: Number(data.catagory) || 1,
+      // categoryId: Number(data.catagory) || 1,
+      categoryId: 1,
       images: urls,
     };
 
-    // Post product to API (uses same base env var pattern as upload)
     const base = process.env.NEXT_PUBLIC_API_BASE_API ?? "";
     const productUrl = `${base}/api/v1/products`;
     try {

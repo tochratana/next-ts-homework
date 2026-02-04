@@ -1,11 +1,12 @@
 import axios from "axios";
 
 export async function uploadImageToServer(image: FormData) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_API ?? "";
+  const base = process.env.NEXT_PUBLIC_API_BASE_API;
   const url = `${base}/api/v1/files/upload`;
 
   try {
     const response = await axios.post(url, image, {
+      method: "POST",
       headers: {
         Accept: "*/*",
       },
