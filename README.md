@@ -1,2 +1,2 @@
-### Classnote for frontend Next.js\
+### Classnote for frontend Next.js
 #### New Contributor

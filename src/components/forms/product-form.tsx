@@ -44,8 +44,8 @@ import ImageUpload, { ImageFile } from "../file-upload/image-upload";
 import {
   uploadImageToServer,
   createProduct,
-  getCategory,
 } from "@/lib/data/uploadImage";
+import getCategory from "@/lib/data/getCategory";
 
 const formSchema = z.object({
   title: z
@@ -57,7 +57,7 @@ const formSchema = z.object({
     .min(20, "Product must be at least 20 characters.")
     .max(100, "Product must be at most 100 characters."),
   price: z.coerce.number().positive("Price must be greater than 0"),
-  catagory: z
+  catagories: z
     .string()
     .min(1, "Please select your spoken language.")
     .refine((val) => val !== "auto", {
@@ -67,6 +67,7 @@ const formSchema = z.object({
   image: z.any(),
 });
 
+
 const spokenLanguages = [
   { label: "English", value: "en" },
   { label: "Spanish", value: "es" },
@@ -75,9 +76,12 @@ const spokenLanguages = [
   { label: "Italian", value: "it" },
   { label: "Chinese", value: "zh" },
   { label: "Japanese", value: "ja" },
-] as const;
+] as const
 
-await getCategory();
+
+
+const data = await getCategory();
+console.log("I can get category : ", data);
 
 export function ProductForm() {
   const formData = new FormData();
@@ -89,10 +93,13 @@ export function ProductForm() {
       title: "",
       description: "",
       price: 0,
-      catagory: "",
+      catagories: "",
       image: "",
     },
   });
+
+
+  
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     // toast("You submitted the following values:", {
@@ -114,41 +121,45 @@ export function ProductForm() {
       formData.append("file", image.file);
     }
 
-    let resp: any;
-    try {
-      resp = await uploadImageToServer(formData);
-      console.log("Upload to server:", resp);
-    } catch (err: any) {
-      console.error("Image upload failed:", err?.message ?? err);
-      toast("Image upload failed. See console for details.");
-      return; // abort submit when upload fails
-    }
+    const resp = await uploadImageToServer(formData)
+    console.log("File Upload to server:", resp);
 
-    // Resolve possible response shapes into an array of image URLs
-    let urls: string[] = [];
-    if (Array.isArray(resp)) {
-      urls = resp
-        .map(
-          (u: any) =>
-            u.location ?? u.url ?? u.path ?? u.fileUrl ?? u.src ?? u.filename,
-        )
-        .filter(Boolean);
-    } else if (Array.isArray(resp?.files)) {
-      urls = resp.files
-        .map((f: any) => f.location ?? f.url ?? f.path ?? f.fileUrl ?? f.src)
-        .filter(Boolean);
-    } else if (resp?.location || resp?.url) {
-      urls = [resp.location ?? resp.url];
-    }
+    // array of image URLs
+    // let urls: string[] = [];
+    // if (Array.isArray(resp)) {
+    //   urls = resp
+    //     .map(
+    //       (u: any) =>
+    //         u.location ?? u.url ?? u.path ?? u.fileUrl ?? u.src ?? u.filename,
+    //     )
+    //     .filter(Boolean);
+    // } else if (Array.isArray(resp?.files)) {
+    //   urls = resp.files
+    //     .map((f: any) => f.location ?? f.url ?? f.path ?? f.fileUrl ?? f.src)
+    //     .filter(Boolean);
+    // } else if (resp?.location || resp?.url) {
+    //   urls = [resp.location ?? resp.url];
+    // }
+
+    const urls = [resp.location]
+
+    console.log("URL : " ,urls);
+
+
+    console.log("All data from data when submit : ", data);
 
     const productPayload = {
       title: data.title,
       price: data.price,
       description: data.description,
-      // categoryId: Number(data.catagory) || 1,
-      categoryId: 1,
+      categoryId: Number(data.catagories),
+      // categoryId: 1,
       images: urls,
     };
+
+
+    
+    console.log("All Data here : ",data);
 
     try {
       await createProduct(productPayload);
@@ -266,7 +277,7 @@ export function ProductForm() {
 
             {/* TODO controller language */}
             <Controller
-              name="catagory"
+              name="catagories"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field
@@ -304,6 +315,12 @@ export function ProductForm() {
                           {language.label}
                         </SelectItem>
                       ))}
+
+                      {/* {spokenLanguages.map((language) => (
+                        <SelectItem key={language.id} value={language.id}>
+                          {language.name}
+                        </SelectItem>
+                      ))} */}
                     </SelectContent>
                   </Select>
                 </Field>

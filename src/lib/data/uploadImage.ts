@@ -24,12 +24,3 @@ export async function createProduct(productPayload: PorductRequet) {
   console.log("Product created:", response.data);
   return response.data;
 }
-
-export async function getCategory() {
-  const base = process.env.NEXT_PUBLIC_API_BASE_API;
-  const url = `${base}/api/v1/categories`;
-
-  const response = await axios.get(url);
-  console.log("All Category : ", response);
-  return response;
-}
