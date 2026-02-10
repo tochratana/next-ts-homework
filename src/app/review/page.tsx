@@ -25,6 +25,8 @@
 import { Suspense } from "react";
 
 export default function PageTesting() {
+
+  console.log("Hello this is what ? ");
   return (
     <div>
       <h1>This is a page that I just testing</h1>
