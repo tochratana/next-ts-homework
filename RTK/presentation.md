@@ -159,7 +159,7 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 ```
 
-1. Provide Store to App `app/layout.tsx`
+5. Provide Store to App `app/layout.tsx`
 
 ```tsx
 "use client";
