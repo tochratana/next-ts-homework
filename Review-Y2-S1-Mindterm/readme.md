@@ -79,3 +79,59 @@ npx create-next-app@latest
 | Fullstack   | ❌            | ✅               |
 
 ---
+
+> 3. Server side, and Client side rendering → process
+
+- Client-Side Rendering (CSR) នៅក្នុង Next.js
+
+Render នៅ Browser (Client)
+1. Process (ជំហាន)
+2. User request page (example: /products)
+3. Server ផ្ញើ HTML ទទេ + JavaScript bundle
+4. Browser download JS
+5. React run នៅ browserFetch data (API)
+6. Render UI នៅ browser
+7. User ទើបឃើញ page
+
+```bash
+"use client"
+import { useEffect, useState } from "react"
+
+export default function Page() {
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    fetch("https://api.example.com/products")
+      .then(res => res.json())
+      .then(setData)
+  }, [])
+
+  return <div>{data.length} items</div>
+}
+```
+
+`use client` នៅក្នុងនៅក្នុង next.js
+
+- Server-Side Rendering (SSR) នៅក្នុង Next.js
+
+Render នៅក្នុង Server ហើយបានធ្វើការ send ទៅកាន់ browser
+1. Process (ជំហាន)
+2. User request page (/products)
+3. Next.js Server run React
+4. Fetch data from DB/API
+5. Render HTML complete page
+6. Send HTML to browser
+7. Browser show content instantly
+8. React hydrate → page becomes interactive
+
+Compare 
+
+| Step | CSR                   | SSR             |
+| ---- | --------------------- | --------------- |
+| 1    | Request               | Request         |
+| 2    | Empty HTML            | Server render   |
+| 3    | Download JS           | Fetch data      |
+| 4    | React run in browser  | HTML ready      |
+| 5    | Fetch data in browser | Send to browser |
+| 6    | Render UI             | Show instantly  |
+| 7    | Interactive           | Hydration       |
