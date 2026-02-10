@@ -28,17 +28,23 @@ npm install @reduxjs/toolkit react-redux
 > store/services/productApi.ts
 ```ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+// it have 3 part in funciton createApi (1.reducerPath, 2.baseQuery, 3.endpoints)
 export const productApi = createApi({
+
+  // defind part of reducer
   reducerPath: "productApi",
 
+
+  // get api or fetch api here
   baseQuery: fetchBaseQuery({
     baseUrl: "https://api.escuelajs.co/api/v1/",
   }),
 
+
+  // get poind for get api
   endpoints: (builder) => ({
     // GET /products
-    getProducts: builder.query<any, void>({
+    getProducts: builder.query<any, void>({ // for this type should be use <ApiReturnType, ParameterType>
       query: () => "products",
     }),
   }),
