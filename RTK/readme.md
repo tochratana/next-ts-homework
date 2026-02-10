@@ -140,5 +140,26 @@ App → Layout → Navbar → Button → Counter
 Redux lets you store state in one global store and access anywhere.
 
 **Core Concept:**
-1. store: Global state container
-2. Slice
+1. Store: Global state container
+2. Slice: is part of store 
+- Example
+  - counterSlice
+  - authSlice
+  - themeSlice
+- Each slice contains:
+  - state
+  - reducers (logic)
+  - actions
+
+
+
+Compare of RTK and RTK Query : 
+
+
+| RTK               | RTK Query     |
+| ----------------- | ------------- |
+| Local state       | Server state  |
+| UI / Auth / Theme | API / Backend |
+| Manual fetch      | Auto fetch    |
+| No cache          | Smart cache   |
+| useSelector       | auto hooks    |
