@@ -43,8 +43,8 @@ Component → dispatch(action) → reducer → update store → UI re-render
 1. Setup Folder Structure 
 ```bash
 /store
-   index.ts
-   hooks.ts
+   index.ts // store.ts
+   hooks.ts // យើងអាចបង្កើតនៅ folder hook ហើយផ្ទុកនៅ file មួយនេះ
    /slice
        counterSlice.ts
 /app
@@ -65,8 +65,8 @@ const initialState: CounterState = {
 };
 
 const counterSlice = createSlice({
-  name: "counter",
-  initialState,
+  name: "counter", // must be the same
+  initialState, // { value: 0 }
   reducers: {
     increment: (state) => {
       state.value += 1; // Immer → safe mutate
@@ -94,18 +94,63 @@ import counterReducer from "./slice/counterSlice";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer
+    counter: counterReducer // must be the same
   }
 });
 
-// Types for TS
+// Types(Important) for TS
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 ```
 
 
-4. Typed Hooks (Best Practice) `store/hooks.ts`
+4. Typed Hooks (Best Practice) `store/hooks.ts` 
 
+យើងមិនប្រើប្រាស់នៅ hook ក៏បានដែរ
+
+
+You can use raw hooks:
+```tsx
+import { useSelector, useDispatch } from "react-redux";
+```
+
+នៅក្នុង component 
+```tsx
+const count = useSelector((state: any) => state.counter.value);
+const dispatch = useDispatch();
+```
+✔ Redux still works
+✔ Selector still works
+✔ Dispatch still works
+
+Because TypeScript safety + cleaner code
+
+Without hooks.ts:
+- state becomes any
+- No autocomplete
+- Can make mistakes
+
+with hook.ts
+```ts
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+```
+
+
+then : 
+```tsx
+const count = useAppSelector((state) => state.counter.value);
+const dispatch = useAppDispatch();
+```
+
+Benefits:
+- Full TypeScript typing
+- Autocomplete
+- Safer code
+- Cleaner imports
+
+
+`hook.ts`
 ```ts
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "./index";
@@ -114,7 +159,7 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 ```
 
-5. Provide Store to App `app/layout.tsx`
+1. Provide Store to App `app/layout.tsx`
 
 ```tsx
 "use client";
@@ -167,6 +212,71 @@ export default function Page() {
   );
 }
 ```
+
+
+> You don’t need StoreProvider if your store is simple and client-only
+> You should use StoreProvider when using Next.js App Router + Server Components + SSR + per-request store
+
+
+
+
+> Why sometimes NOT using StoreProvider works?
+
+In my example:
+```tsx
+<Provider store={store}>{children}</Provider>
+```
+- Store is single global store
+- Runs only in client
+- No SSR / no server state
+- Simple app → OK
+
+> When you MUST use StoreProvider (Recommended in real apps)
+
+Use StoreProvider when:
+- Using Next.js App Router (Server + Client mix) ⚠️
+- Need per-request store (SSR safe)
+- Avoid store sharing between users
+- Want scalable architecture
+
+Example store provider : `store/StoreProvider.tsx`
+```bash
+"use client";
+
+import { Provider } from "react-redux";
+import { store } from "./index";
+
+export default function StoreProvider({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  return <Provider store={store}>{children}</Provider>;
+}
+```
+
+Use in layout
+```bash
+import StoreProvider from "@/store/StoreProvider";
+
+export default function RootLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html>
+      <body>
+        <StoreProvider>{children}</StoreProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+
+
+
 
 ---
 

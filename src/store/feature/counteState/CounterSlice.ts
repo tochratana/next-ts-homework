@@ -4,13 +4,13 @@ import { CounterState } from "@/types/types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: CounterState = {
-  value: 0,
-};
+// const initialState: CounterState = {
+//   value: 0,
+// };
 
 export const CounterSlice = createSlice({
   name: "counter",
-  initialState,
+  initialState: { value: 0 },
   reducers: {
     increment: (state, action: PayloadAction<number | undefined>) => {
       const incrementBy = action.payload !== undefined ? action.payload : 1;

@@ -23,7 +23,7 @@ export default function GetProductUsingRtk() {
     <div className="grid grid-cols-3 gap-4">
       {data?.map((product: ProductType) => (
         <div key={product.id} className="border p-4 rounded">
-          <Image
+          <img
             alt={product.title}
             src={product.images[0]}
             className="w-full h-40 object-cover"
