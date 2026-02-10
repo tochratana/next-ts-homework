@@ -135,3 +135,61 @@ Compare
 | 5    | Fetch data in browser | Send to browser |
 | 6    | Render UI             | Show instantly  |
 | 7    | Interactive           | Hydration       |
+
+
+---
+
+> 4. Benefits of Server-Side Rendering (SSR) and Client-Side Rendering (CSR)
+
+🔷 Benefits of Server-Side Rendering (SSR)
+
+Render នៅ Server មុនផ្ញើទៅ Browser
+1. First Load លឿន
+2. SEO ល្អ
+3. Content មើលបានទោះបី JS មិនទាន់ load
+4. Secure Data (Fetch data នៅ Server → API key / secret មិនបង្ហាញទៅ Client)
+5. Always Fresh Data
+6. Better Performance for Public Pages
+
+🔷 Benefits of Client-Side Rendering (CSR)
+
+Render នៅ Browser (Client)
+1. Smooth UI (SPA Experience)
+2. Less Server Work
+3. Good for Interactive App
+4. Fast Navigation After First Load
+5. Better Client-side State
+6. Offline / Cache Friendly
+
+SSR vs CSR (Benefits Compare)
+
+| Feature      | SSR           | CSR             |
+| ------------ | ------------- | --------------- |
+| First Load   | ⚡ Fast        | ❌ Slower        |
+| SEO          | ✅ Good        | ❌ Poor          |
+| Server Load  | ❌ Higher      | ✅ Lower         |
+| UI Smooth    | Normal        | ✅ Smooth        |
+| Navigation   | Normal        | ⚡ Fast          |
+| Security     | ✅ Better      | ❌ Less          |
+| Dynamic Data | ✅ Fresh       | Depends         |
+| Best For     | Blog / Public | Dashboard / App |
+
+---
+
+> 5. ការ stream data in nextjs , Suspense ... loading
+
+```jsx
+import { Suspense } from "react"
+import Products from "./Products"
+
+export default function Page() {
+  return (
+    <div>
+      <h1>Products</h1>
+      <Suspense fallback={<p>Loading products...</p>}>
+        <Products />
+      </Suspense>
+    </div>
+  )
+}
+```
