@@ -373,5 +373,6 @@ flowchart LR
 
 **Structure Project :**
 
-![stucture-project](../image/structure-project.png)
+<img src="../image/structure-project.png" alt="structure-project" width="200"/>
+
 1. Create API Slice
