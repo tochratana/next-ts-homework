@@ -376,3 +376,80 @@ flowchart LR
 <img src="../image/structure-project.png" alt="structure-project" width="200"/>
 
 1. Create API Slice
+
+
+---
+
+ហេតុអ្វីបានជាយើងប្រើប្រាស់នៅ StoreProvider ?
+
+> ជាក់ស្តែង -> StoreProvider មិនមែនជារបស់ Redux ទេ វាគ្រាន់តែជា component ដែល developer បង្កើតដោយខ្លួនឯង ដើម្បី wrap `<Provider>` ប៉ុណ្ណោះ។
+
+
+និយាយសាមញ្ញ៖
+
+| ឈ្មោះ           | មកពីណា                    | អ្វីដែលវាធ្វើ              |
+| --------------- | ------------------------- | -------------------------- |
+| `Provider`      | react-redux (official)    | ភ្ជាប់ Redux Store ទៅ App  |
+| `StoreProvider` | Custom (developer បង្កើត) | Wrap `Provider` ឲ្យប្រើងាយ |
+
+
+**StoreProvider.tsx**
+```tsx
+'use client'
+
+import { Provider } from 'react-redux'
+import { store } from '@/app/store'
+
+export default function StoreProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return <Provider store={store}>{children}</Provider>
+}
+```
+
+**Laybout.tsx**
+```tsx
+import StoreProvider from './StoreProvider'
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <StoreProvider>
+          {children}
+        </StoreProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+
+ភាគច្រើនគេប្រើប្រាស់នៅ StoreProvider ព្រោះ៖
+* Client / Server Separation: 
+  Redux ត្រូវដំណើរការ client side → ត្រូវមាន `'use client'` ដូច្នេះគេដាក់វាក្នុង StoreProvider ដើម្បីអោយ layout.tsx ស្អាត។
+* ងាយបន្ថែម Provider ផ្សេងៗ: 
+
+  ពេល project ធំ អ្នកអាចមាន:
+  * ThemeProvider
+  * AuthProvider
+  * PersistProvider
+  * QueryProvider
+  ```tsx
+    <StoreProvider>
+      <ThemeProvider>
+        <AuthProvider>{children}</AuthProvider>
+      </ThemeProvider>
+    </StoreProvider>
+  ``` 
+  ជំនួសដាក់គ្រប់យ៉ាងក្នុង layout.tsx (ដែលធ្វើអោយ code រញ៉េរញ៉ៃ)
+
+* Advanced (Store per request): ក្នុង Next.js advanced usage → មួយ request អាចត្រូវការបង្កើត store ថ្មី StoreProvider ជួយគ្រប់គ្រង logic នេះបានល្អ។
+ 
+  (ភាគច្រើន project មិនទាន់ត្រូវការ)
