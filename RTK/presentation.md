@@ -372,25 +372,6 @@ flowchart LR
 ```
 
 **Structure Project :**
-```bash
-src/
-│
-├── app/
-│   ├── store.js
-│
-├── services/
-│   ├── api.js
-│   ├── userApi.js
-│
-├── features/
-│   ├── users/
-│   │   ├── Users.jsx
-│
-├── components/
-│   ├── Loader.jsx
-│   ├── Error.jsx
-│
-├── App.jsx
-├── main.jsx
-```
+
+![stucture-project](../image/structure-project.png)
 1. Create API Slice
