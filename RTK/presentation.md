@@ -280,7 +280,117 @@ export default function RootLayout({
 
 ---
 
-1. តើ RTK Query គឺជាអ្វី?
-2. ហេតុអ្វីបានជាយើងត្រូវប្រើប្រាស់ RTK Query?
-3. តើពេលណាដែលយើងត្រូវប្រើប្រាស់ RTK Query?
-4. តើ RTK Query ដំណើរការដូចម្ដេច?
+
+### 3. តើ RTK Query គឺជាអ្វី?
+
+![](https://raw.githubusercontent.com/rtk-incubator/rtk-query/main/logo.png)
+
+**RTK Query** គឺជា tool មួយនៅក្នុង Redux Toolkit ដែលជួយយើង fetch data ពី API និងគ្រប់គ្រង state ដោយស្វ័យប្រវត្តិ ។
+
+និយាយសាមញ្ញ -> `RTK Query = Tool សម្រាប់ call API + cache + loading + error + update UI ដោយមិនចាំបាច់សរសេរ code ច្រើន។`
+
+វាជួួយយើង
+* Fetch data (GET)
+* Create / Update / Delete (POST, PUT, DELETE)
+* Cache data
+* Refetch auto
+* Manage loading & error state
+
+![RTK](https://paper-attachments.dropboxusercontent.com/s_118F96EA7D62F679A47C2AD439C93DC9203009C47C6538B354532E5ADE3FA23F_1676627146090_redux-graphs.png)
+
+
+---
+
+
+### 4. ហេតុអ្វីបានជាយើងត្រូវប្រើប្រាស់ RTK Query?
+
+មុនមាន RTK Query
+
+យើងត្រូវសរសេរ៖
+* useEffect
+* useState
+* dispatch action
+* reducer
+* loading / error state
+* cache logic
+> Code ច្រើន + ពិបាក maintain
+
+ក្រោយមាន RTK Query
+* Auto caching
+* Auto refetch
+* Auto loading / error state
+* Reduce boilerplate code
+* Easy CRUD with API
+* Better performance
+> RTK Query ធ្វើអោយ React App : clean, fast, easy maintain
+> 
+---
+
+### 5. តើពេលណាដែលយើងត្រូវប្រើប្រាស់ RTK Query?
+
+យើងគួរប្រើ RTK Query នៅពេល
+* App មាន API
+  * Fetch products
+  * Fetch users
+  * Blog / Posts
+  * Dashboard data
+* ត្រូវការប្រើ Cache
+  * មិនចង់ fetch API ម្តងហើយម្តងទៀត
+  * Improve performance
+* CRUD App
+  * Create post
+  * Update profile
+  * Delete item
+* Large / Real project
+  * Ecommerce
+  * Admin Dashboard
+  * Social Media
+  * SaaS App
+
+> បើ App តូច ឬ API តិច អាចប្រើ fetch ធម្មតាបាន
+> បើ App ធំ -> RTK Query ជាជម្រើសល្អ
+
+------
+
+### 6. តើ RTK Query ដំណើរការដូចម្ដេច?
+
+
+```mermaid
+flowchart LR
+    D["Component"] --> n1["Hook"]
+    n1 --> n2["RTK Query"]
+    n2 --> n3["API"]
+    n3 --> n4["Cache"]
+    n4 --> n5["UI Update"]
+
+    style D fill:#FFE0B2
+    style n1 fill:#FFD600
+    style n2 fill:#AA00FF
+    style n3 stroke:#2962FF,fill:#2962FF
+    style n4 fill:#E1BEE7
+    style n5 fill:transparent
+```
+
+**Structure Project :**
+```bash
+src/
+│
+├── app/
+│   ├── store.js
+│
+├── services/
+│   ├── api.js
+│   ├── userApi.js
+│
+├── features/
+│   ├── users/
+│   │   ├── Users.jsx
+│
+├── components/
+│   ├── Loader.jsx
+│   ├── Error.jsx
+│
+├── App.jsx
+├── main.jsx
+```
+1. Create API Slice
