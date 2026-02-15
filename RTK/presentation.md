@@ -380,7 +380,7 @@ flowchart LR
 
 ---
 
-ហេតុអ្វីបានជាយើងប្រើប្រាស់នៅ StoreProvider ?
+### ហេតុអ្វីបានជាយើងប្រើប្រាស់នៅ StoreProvider ?
 
 > ជាក់ស្តែង -> StoreProvider មិនមែនជារបស់ Redux ទេ វាគ្រាន់តែជា component ដែល developer បង្កើតដោយខ្លួនឯង ដើម្បី wrap `<Provider>` ប៉ុណ្ណោះ។
 
@@ -453,3 +453,10 @@ export default function RootLayout({
 * Advanced (Store per request): ក្នុង Next.js advanced usage → មួយ request អាចត្រូវការបង្កើត store ថ្មី StoreProvider ជួយគ្រប់គ្រង logic នេះបានល្អ។
  
   (ភាគច្រើន project មិនទាន់ត្រូវការ)
+
+
+--- 
+### Injecting Endpoints vs Enhancing Endpoints
+
+* [redux-toolkit](https://redux-toolkit.js.org/rtk-query/usage/code-splitting)
+* 
