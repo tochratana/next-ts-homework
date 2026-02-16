@@ -375,9 +375,71 @@ flowchart LR
 
 <img src="../image/structure-project.png" alt="structure-project" width="200"/>
 
-1. Create API Slice
+##### 1. Create API Slice
 
+អ្នកបង្កើត API slice មួយដោយ createApi
+```ts
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
+export const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.example.com' }),
+  endpoints: (builder) => ({
+    getUsers: builder.query<User[], void>({
+      query: () => '/users',
+    }),
+  }),
+})
+
+export const { useGetUsersQuery } = api
+```
+នៅទីនេះ RTK Query បង្កើត:
+- hook (useGetUsersQuery)
+- cache
+- loading / error state
+- auto refetch
+
+#### 2. Add to Store
+```ts
+import { configureStore } from '@reduxjs/toolkit'
+import { api } from './services/api'
+
+export const store = configureStore({
+  reducer: {
+    [api.reducerPath]: api.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(api.middleware),
+})
+```
+middleware នេះគ្រប់គ្រង:
+- caching
+- refetch
+- invalidation
+- polling
+
+#### 3. Use Hook in Component
+```tsx
+const Users = () => {
+  const { data, error, isLoading } = useGetUsersQuery()
+
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error</p>
+
+  return (
+    <ul>
+      {data?.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  )
+}
+```
+RTK Query ធ្វើអោយ:
+- Auto fetch when component mount
+- Cache result
+- Reuse data (no duplicate request)
+- Auto re-render UI
 ---
 
 ### ហេតុអ្វីបានជាយើងប្រើប្រាស់នៅ StoreProvider ?
